@@ -1,6 +1,6 @@
 /*
  * CLEO Script Java
- * FSSRepo 2024
+ * FSSRepo 2026
  */
 
 package com.fastsmartsystem.cleo;
@@ -41,8 +41,22 @@ public class ScriptCompiler
 		return !error.isEmpty();
 	}
 
+	private void reset() {
+		labels.clear();
+		opcodes_processed.clear();
+		opcodes_compiled.clear();
+		labels_addresses.clear();
+		if_waiting = null;
+		num_conditions = 0;
+		logical_op = 0;
+		error = "";
+		line_idx = 0;
+		size = 0;
+	}
+
 	public String compile(String text, OutputStream os) {
 		try {
+			reset();
 			if(!processText(text)) {
 				return error;
 			}
@@ -302,7 +316,9 @@ public class ScriptCompiler
 						return false;
 					}
 				} else {
-					current.arguments.add(argument);
+					if(!argument.matches("and|or")) {
+						current.arguments.add(argument);
+					}
 				}
 			} else {
 				int fd = ide_collector.getIdByDefinition(argument.substring(1));

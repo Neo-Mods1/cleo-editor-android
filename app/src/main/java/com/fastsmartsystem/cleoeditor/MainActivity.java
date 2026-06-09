@@ -125,10 +125,10 @@ public class MainActivity extends AppCompatActivity {
         // TODO: Select custom ide
         extractAssets();
         ide_collector = new IDECollector();
-        ide_collector.load(App.dataDirectory + "default.ide");
-        ide_collector.load(App.dataDirectory + "globals.ide");
-        ide_collector.load(App.dataDirectory + "peds.ide");
-        ide_collector.load(App.dataDirectory + "vehicles.ide");
+        ide_collector.collect(App.dataDirectory + "default.ide");
+        ide_collector.collect(App.dataDirectory + "globals.ide");
+        ide_collector.collect(App.dataDirectory + "peds.ide");
+        ide_collector.collect(App.dataDirectory + "vehicles.ide");
         scm_loader = new OpcodesLoader(App.dataDirectory + "sa_mobile.dat");
     }
 

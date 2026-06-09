@@ -1,6 +1,6 @@
 /*
  * CLEO Script Java
- * FSSRepo 2024
+ * FSSRepo 2026
  */
 
 package com.fastsmartsystem.cleo;
@@ -16,9 +16,8 @@ public class IDECollector {
 
 	public ArrayList<IDEItem> items = new ArrayList<>();
 	
-	public void load(String path) {
-		try {
-            BufferedReader reader  = new BufferedReader(new FileReader(path));
+	public void collect(String path) {
+		try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
             String line;
 			boolean collect = false, global_var = false;
             while ((line = reader.readLine()) != null) {
@@ -42,7 +41,6 @@ public class IDECollector {
 					items.add(ide_itm);
 				}
             }
-			reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

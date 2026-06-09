@@ -1,6 +1,6 @@
 /*
  * CLEO Script Java
- * FSSRepo 2024
+ * FSSRepo 2026
  */
 
 package com.fastsmartsystem.cleo;
@@ -47,7 +47,6 @@ public class ScriptDecompiler
 			// load cleo data
 			data = new byte[is.available()];
 			is.read(data);
-			is.close();
 
 			// decompile
 			while(decompiling) {
@@ -69,6 +68,11 @@ public class ScriptDecompiler
 			StringWriter sw = new StringWriter();
 			e.printStackTrace(new PrintWriter(sw));
             decompiled += "Decompile Error:\n" + sw.toString();
+		} finally {
+			if (is != null) {
+				try { is.close(); } catch (IOException ignored) {}
+			}
+			data = null;
 		}
 		return decompiled;
 	}
@@ -81,6 +85,8 @@ public class ScriptDecompiler
 		arguments.clear();
 		script_name = "SCRIPT";
 		offset = 0;
+		first_try_unblock = true;
+		data = null;
 	}
 	
 	private void performDecompile() {

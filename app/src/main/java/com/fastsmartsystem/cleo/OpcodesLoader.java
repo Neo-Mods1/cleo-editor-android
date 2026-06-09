@@ -1,6 +1,6 @@
 /*
  * CLEO Script Java
- * FSSRepo 2024
+ * FSSRepo 2026
  */
 
 package com.fastsmartsystem.cleo;
@@ -15,12 +15,9 @@ public class OpcodesLoader
 	private int offset = 0;
 
 	public OpcodesLoader(String path) {
-        try {
-			InputStream is = new FileInputStream(path);
+        try (InputStream is = new FileInputStream(path)) {
 			data = new byte[is.available()];
 			is.read(data);
-			is.close();
-			is = null;
 
 			int num_opcodes = readShort();
 			for(int i = 0; i < num_opcodes; i++) {
@@ -47,6 +44,7 @@ public class OpcodesLoader
 				}
 				ops.put(id, info);
 			}
+			data = null;
         } catch (IOException e) {
             e.printStackTrace();
         }
