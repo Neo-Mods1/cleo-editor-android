@@ -20,6 +20,8 @@ public class ScriptCompiler
 	private ArrayList<OpcodeCompiled> opcodes_compiled = new ArrayList<OpcodeCompiled>();
 	private HashMap<String, Integer> labels_addresses = new HashMap<>();
 	private IDECollector ide_collector;
+	private HashMap<String, Integer> auto_globals = new HashMap<>();
+	private int next_auto_global_index = 25;
 	private OpcodeProcessed if_waiting = null;
 	private int num_conditions = 0;
 	private int logical_op = 0;
@@ -46,6 +48,8 @@ public class ScriptCompiler
 		opcodes_processed.clear();
 		opcodes_compiled.clear();
 		labels_addresses.clear();
+		auto_globals.clear();
+		next_auto_global_index = 25;
 		if_waiting = null;
 		num_conditions = 0;
 		logical_op = 0;
@@ -129,12 +133,13 @@ public class ScriptCompiler
 					if(fd != -1) {
 						param.value_integer = fd;
 					} else {
-						String test = arg.replace("$", "");
-						if(!checkIfInteger(test)) {
-							error = "Line "+line_idx+": invalid global variable '"+arg+"'";
-							return false;
+						Integer autoIndex = auto_globals.get(arg);
+						if(autoIndex == null) {
+							autoIndex = next_auto_global_index;
+							auto_globals.put(arg, autoIndex);
+							next_auto_global_index++;
 						}
-						param.value_integer =  Integer.parseInt(test);
+						param.value_integer = autoIndex * 4;
 					}
 				} else if(checkIfInteger(arg)) {
 					param.value_integer = Integer.parseInt(arg);

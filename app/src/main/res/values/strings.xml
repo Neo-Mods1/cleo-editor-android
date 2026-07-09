@@ -58,4 +58,8 @@
     <string name="no_example_available">No example available</string>
     <string name="copied_correctly">Copied correctly</string>
     <string name="link_know_more">GTA Modding Documentation</string>
+    <string name="select_game">Select Game</string>
+    <string name="select_game_title">Select target game</string>
+    <string name="game_pc">GTA SA PC</string>
+    <string name="game_mobile">GTA SA Mobile</string>
 </resources>

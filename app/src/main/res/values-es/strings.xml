@@ -59,4 +59,8 @@
     <string name="no_example_available">No hay ejemplo disponible</string>
     <string name="copied_correctly">Copiado correctamente</string>
     <string name="link_know_more">Documentación de GTA Modding</string>
+    <string name="select_game">Seleccionar Juego</string>
+    <string name="select_game_title">Seleccionar juego objetivo</string>
+    <string name="game_pc">GTA SA PC</string>
+    <string name="game_mobile">GTA SA Móvil</string>
 </resources>

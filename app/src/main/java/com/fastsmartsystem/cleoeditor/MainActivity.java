@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.SharedPreferences;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
 import android.view.LayoutInflater;
@@ -53,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     ScriptCompiler compiler;
     ScriptDecompiler decompiler;
+    private static final String PREFS_NAME = "cleo_editor_prefs";
+    private static final String PREF_GAME_TARGET = "game_target";
+    public static final int GAME_PC = 0;
+    public static final int GAME_MOBILE = 1;
+    private int gameTarget = GAME_MOBILE;
     private static final int NEW_FILE = 1;
     private static final int OPEN_FILE = 2;
     private static final int SAVE_FILE = 3;
@@ -122,14 +128,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void initFiles() {
         App.dataDirectory = getExternalFilesDir(null).getAbsolutePath() + "/";
-        // TODO: Select custom ide
         extractAssets();
         ide_collector = new IDECollector();
         ide_collector.collect(App.dataDirectory + "default.ide");
         ide_collector.collect(App.dataDirectory + "globals.ide");
         ide_collector.collect(App.dataDirectory + "peds.ide");
         ide_collector.collect(App.dataDirectory + "vehicles.ide");
-        scm_loader = new OpcodesLoader(App.dataDirectory + "sa_mobile.dat");
+        loadGameTarget();
+        loadOpcodes();
+    }
+
+    private void loadOpcodes() {
+        String datFile = gameTarget == GAME_PC ? "sa.dat" : "sa_mobile.dat";
+        scm_loader = new OpcodesLoader(App.dataDirectory + datFile);
     }
 
 
@@ -231,6 +242,8 @@ public class MainActivity extends AppCompatActivity {
                         performFunction(COMPILE);
                     } else if (itemId == R.id.decompile) {
                         performFunction(DECOMPILE);
+                    } else if (itemId == R.id.select_game) {
+                        showSelectGameDialog();
                     }
                     drawerLayout.closeDrawer(navigationView);
                     return true;
@@ -346,6 +359,33 @@ public class MainActivity extends AppCompatActivity {
         builder.setNeutralButton(getString(R.string.cancel), (dialog, which) -> dialog.dismiss());
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    private void showSelectGameDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.select_game_title));
+        String[] options = { getString(R.string.game_pc), getString(R.string.game_mobile) };
+        int selected = gameTarget == GAME_PC ? 0 : 1;
+        builder.setSingleChoiceItems(options, selected, (dialog, which) -> {
+            gameTarget = which == 0 ? GAME_PC : GAME_MOBILE;
+            saveGameTarget();
+            loadOpcodes();
+            initEngine();
+            dialog.dismiss();
+        });
+        builder.setNegativeButton(getString(R.string.cancel), (dialog, which) -> dialog.dismiss());
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void loadGameTarget() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        gameTarget = prefs.getInt(PREF_GAME_TARGET, GAME_MOBILE);
+    }
+
+    private void saveGameTarget() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        prefs.edit().putInt(PREF_GAME_TARGET, gameTarget).apply();
     }
 
     private void showNewFileDialog() {

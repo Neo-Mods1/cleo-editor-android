@@ -48,5 +48,15 @@
                 app:showAsAction="ifRoom"/>
         </menu>
     </item>
+    <item
+        android:id="@+id/game_item"
+        android:title="Game">
+        <menu>
+            <item
+                android:id="@+id/select_game"
+                android:title="Select Game"
+                app:showAsAction="ifRoom"/>
+        </menu>
+    </item>
 
 </menu>

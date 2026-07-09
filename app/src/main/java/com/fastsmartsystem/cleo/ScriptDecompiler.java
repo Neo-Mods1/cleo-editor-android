@@ -203,7 +203,7 @@ public class ScriptDecompiler
 			case 0x2: // global var
 				int glb = readUShort();
 				String fd = ide_collector.getDefinitionById(glb, true);
-				arg =  fd == null ?  "$" + glb : fd;
+				arg = fd == null ? "$" + (glb / 4) : fd;
 				break;
 			case 0x3: // local var
 				arg = readUShort() + "@";
